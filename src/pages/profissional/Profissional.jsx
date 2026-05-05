@@ -17,11 +17,7 @@ const StyledFab = styled(Fab)({
 
 const Profissional = () => {
     const [profissionais, setProfissionais] = useState([]);
-    const [codigoAlterarProfissional, setCodigoAlterarProfissional] = useState(-1);
     const [idAlterar, setIdAlterar] = useState(-1);
-    const [mostrarExcluir, setMostrarExcluir] = useState(false);
-    const [mostrarAtivar, setMostrarAtivar] = useState(false);
-    const [codDesativar, setCodDesativar] = useState(-1);
     const [colunaOrdem, setColunaOrdem] = useState("");
     const [filtro, setFiltro] = useState("");
     const [contador, setContador] = useState("0");
@@ -29,7 +25,6 @@ const Profissional = () => {
     const [linhasPorPagina, setLinhasPorPagina] = useState(25);
     const [ordem, setOrdem] = useState("");
 
-    const [mostrarCadastro, setMostrarCadastro] = useState(false);
     const [mostrarAlterar, setMostrarAlterar] = useState(false);
     const [buscando, setBuscando] = useState(true);
     const colunas = [
@@ -105,11 +100,7 @@ const Profissional = () => {
     };
     const fecharDialogs = () => {
         setMostrarAlterar(false);
-        setMostrarExcluir(false);
-        setMostrarAtivar(false);
         setIdAlterar(-1);
-        setMostrarCadastro(false);
-        setCodigoAlterarProfissional(-1);
     };
 
     const handlePagina = (pagina) => {
@@ -125,8 +116,8 @@ const Profissional = () => {
         let filter =
             filtro.items.length > 0
                 ? {
-                    field: filtro.items[0].columnField,
-                    operator: filtro.items[0].operatorValue,
+                    field: filtro.items[0].field,
+                    operator: filtro.items[0].operator,
                     value: filtro.items[0].value,
                 }
                 : {
@@ -151,7 +142,7 @@ const Profissional = () => {
         setOrdem(ordenacao ? ordenacao.sort : "");
     };
 
-    const getUsuarios = () => {
+    useEffect(() => {
         buscarTodosUsuarios(filtro, colunaOrdem, ordem, linhasPorPagina, page)
             .then(data => {
                 setProfissionais(data.usuarios)
@@ -159,10 +150,6 @@ const Profissional = () => {
                 setBuscando(false)
             })
             .catch(error => console.log(error))
-    }
-
-    useEffect(() => {
-        getUsuarios()
     }, [linhasPorPagina, page, ordem, colunaOrdem, filtro]);
 
     return (

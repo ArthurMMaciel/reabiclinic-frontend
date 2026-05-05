@@ -12,17 +12,7 @@ import CampoTexto from "../../components/CamposTexto/CampoTexto";
 import CampoSenha from "../../components/CamposTexto/CampoSenha";
 import { validateEmail } from "../../util/validateEmail";
 
-const styles = () => ({
-  div: {
-    margin: "10px",
-    display: "flex",
-    justifyContent: "space-between",
-    flexDirection: "column",
-  },
-});
-
 const CadastroProfissional = (props) => {
-  const { classes } = props;
   const [nomeCompleto, setNomeCompleto] = useState("");
   const [login, setLogin] = useState("");
   const [email, setEmail] = useState("");
@@ -30,7 +20,6 @@ const CadastroProfissional = (props) => {
   const [especialidade, setEspecialidade] = useState("");
   const [confirmarSenha, setConfirmarSenha] = useState("");
   const [edicao, setEdicao] = useState(false);
-  const [carregando, setCarregando] = useState(false);
   const campoTextoRef = useRef(null);
 
   const handleCancelar = () => {
@@ -131,18 +120,15 @@ const CadastroProfissional = (props) => {
   };
 
   const getUsuario = (id) => {
-    setCarregando(true);
     buscaUsuario(id)
       .then((resp) => {
         console.log(resp);
         setEmail(resp.email);
         setEspecialidade(resp.especialidade);
         setNomeCompleto(resp.nomeCompleto);
-        setCarregando(false);
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Erro ao buscar informações do Profisisonal");
-        setCarregando(false);
       });
   };
 

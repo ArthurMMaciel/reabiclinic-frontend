@@ -1,7 +1,6 @@
 import axios from "axios";
 const url_base = import.meta.env.VITE_URL_API_BASE;
 const url = `${url_base}/usuarios`;
-import { jwtDecode } from "jwt-decode";
 
 const valorFiltro = (url, filtro) => {
   let urlMontado = url;
@@ -113,9 +112,9 @@ export const buscarTodosUsuarios = (
     let url_montado = `${url}?`;
 
     if (limit) {
-      offset = offset * limit;
+      const computedOffset = offset * limit;
 
-      url_montado = url_montado + "limit=" + limit + "&offset=" + offset + "&";
+      url_montado = url_montado + "limit=" + limit + "&offset=" + computedOffset + "&";
     }
 
     if (filtro) {
@@ -136,7 +135,7 @@ export const buscarTodosUsuarios = (
         if (resp.data) {
           resolve(resp.data);
         } else {
-          reject("Usuário não encontrado.");
+          reject(new Error("Usuário não encontrado."));
         }
       })
       .catch((error) => reject(error));
@@ -150,7 +149,7 @@ export const buscaUsuario = (id) =>
         if (resp.data) {
           resolve(resp.data);
         } else {
-          reject("Usuário não encontrado.");
+          reject(new Error("Usuário não encontrado."));
         }
       })
       .catch((error) => reject(error));

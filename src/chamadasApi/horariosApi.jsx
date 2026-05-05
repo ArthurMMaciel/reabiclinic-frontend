@@ -1,7 +1,6 @@
 import axios from "axios";
 const url_base = import.meta.env.VITE_URL_API_BASE;
 const url = `${url_base}/turnos`;
-import { jwtDecode } from "jwt-decode";
 
 const valorFiltro = (url, filtro) => {
   let urlMontado = url;
@@ -42,9 +41,9 @@ export const buscarTodosHorarios = (
     let url_montado = `${url}?`;
 
     if (limit) {
-      offset = offset * limit;
+      const computedOffset = offset * limit;
 
-      url_montado = url_montado + "limit=" + limit + "&offset=" + offset + "&";
+      url_montado = url_montado + "limit=" + limit + "&offset=" + computedOffset + "&";
     }
 
     if (filtro) {
@@ -66,7 +65,7 @@ export const buscarTodosHorarios = (
         if (resp.data) {
           resolve(resp.data);
         } else {
-          reject("Usuário não encontrado.");
+          reject(new Error("Usuário não encontrado."));
         }
       })
       .catch((error) => reject(error));
@@ -80,7 +79,7 @@ export const buscaHorario = (id) =>
         if (resp.data) {
           resolve(resp.data);
         } else {
-          reject("Usuário não encontrado.");
+          reject(new Error("Usuário não encontrado."));
         }
       })
       .catch((error) => reject(error));
@@ -94,7 +93,7 @@ export const removerHorario = (id) =>
         if (resp.data) {
           resolve(resp.data);
         } else {
-          reject("Turno não encontrado.");
+          reject(new Error("Turno não encontrado."));
         }
       })
       .catch((error) => reject(error));
@@ -108,7 +107,7 @@ export const fecharDiaSemana = (dia) =>
         if (resp.data) {
           resolve(resp.data);
         } else {
-          reject("Erro ao remover os turno do dia");
+          reject(new Error("Erro ao remover os turno do dia"));
         }
       })
       .catch((error) => reject(error));

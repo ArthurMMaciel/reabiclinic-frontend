@@ -1,0 +1,84 @@
+image: node:18
+# image: cypress/browsers:node-20.9.0-chrome-118.0.5993.88-1-ff-118.0.2-edge-118.0.2088.46-1
+
+pipelines:
+  branches:
+    Develop:
+      - step:
+          name: Build
+          caches:
+            - node
+          script:
+            - npm install
+            - npm run build
+            # # start the server in the background
+            # - yarn start &
+            # # run Cypress tests in Firefox
+            # - npx cypress run --browser firefox
+          artifacts:
+            - build/**
+            # - cypress/videos/**
+            # - cypress/screenshots/**
+
+      - step:
+          name: Deploy Development
+          script:
+            - pipe: atlassian/ftp-deploy:0.6.0
+              variables:
+                USER: "dev@reabidev.solumobi.com.br"
+                PASSWORD: "AGogmI1;7~7R"
+                SERVER: ftp.solumobi.com.br
+                REMOTE_PATH: /
+                LOCAL_PATH: build/
+                DELETE_FLAG: "false"
+                EXCLUDE: "assets/**"
+          # - apt-get update && apt-get install -y lftp
+          # - lftp -e "open -u centralhomolog@centralhomolog.solumobi.com.br,mCI[@\&Jv$S.G ftp.solumobi.com.br; set ssl:verify-certificate no; mirror -R --verbose --exclude-glob .git --exclude .git/ --exclude .gitignore --exclude .env -x ^\. -x ^node_modules/ -x ^build/ /home2/solumo83/centralhomolog.solumobi.com.br; quit"
+
+    # master:
+    #   - step:
+    #       name: Build and Test
+    #       caches:
+    #         - node
+    #       script:
+    #         - yarn install
+    #         - yarn build
+    #       artifacts:
+    #         - build/**
+
+    #   - step:
+    #       name: Deploy Production
+    #       script:
+    #         - pipe: atlassian/ftp-deploy:0.6.0
+    #           variables:
+    #             USER: "${USER_PRODUCTION}"
+    #             PASSWORD: "${PASSWORD_PRODUCTION}"
+    #             SERVER: ftp.solumobi.com.br
+    #             REMOTE_PATH: /
+    #             LOCAL_PATH: build/
+    #             DELETE_FLAG: "false"
+    #             EXCLUDE: "assets/**"
+
+    # Homolog:
+    #   - step:
+    #       name: Build
+    #       caches:
+    #         - node
+    #       script:
+    #         - yarn install
+    #         - yarn build
+    #       artifacts:
+    #         - build/**
+
+    #   - step:
+    #       name: Deploy Homolog
+    #       script:
+    #         - pipe: atlassian/ftp-deploy:0.6.0
+    #           variables:
+    #             USER: "${USER_HOMOLOG}"
+    #             PASSWORD: "${PASSWORD_HOMOLOG}"
+    #             SERVER: ftp.solumobi.com.br
+    #             REMOTE_PATH: /
+    #             LOCAL_PATH: build/
+    #             DELETE_FLAG: "false"
+    #             EXCLUDE: "assets/**"

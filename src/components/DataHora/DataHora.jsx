@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { TrashIcon } from "@heroicons/react/24/outline";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -69,7 +69,7 @@ export default function DataHora() {
           });
         });
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Erro ao buscar a lista de turnos", { theme: "colored" });
       });
   };
@@ -81,18 +81,18 @@ export default function DataHora() {
   const handleFechado = (dia) => {
     setCarregando(true);
     fecharDiaSemana(dia.dia.split("-")[0].trim())
-      .then((resp) => {
+      .then(() => {
         toast(`Todos os horário de atendimento de ${dia.dia} foram removidos!`);
         setDias((prevDias) =>
           prevDias.map((d) =>
             d.dia === dia.dia
-              ? { ...d, fechado: event.target.checked, horarios: [] }
+              ? { ...d, fechado: true, horarios: [] }
               : d
           )
         );
         setCarregando(false);
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Erro ao remover os horários de atendimento do dia.", {
           theme: "colored",
         });
@@ -141,7 +141,7 @@ export default function DataHora() {
         setDiaSelecionado(null);
         setOpenCadastro(false);
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Erro ao cadastrar turno, por favor tente novamente", {
           theme: "colored",
         });
@@ -154,7 +154,7 @@ export default function DataHora() {
     const horarioId = horario.id;
 
     removerHorario(horarioId)
-      .then((response) => {
+      .then(() => {
         setDias((prevDias) =>
           prevDias.map((d) =>
             d.dia === dia.dia
@@ -164,7 +164,7 @@ export default function DataHora() {
         );
         toast.success("Turno removido com sucesso!", { theme: "colored" });
       })
-      .catch((error) => {
+      .catch(() => {
         toast.error("Erro ao remover o turno, por favor tente novamente", {
           theme: "colored",
         });

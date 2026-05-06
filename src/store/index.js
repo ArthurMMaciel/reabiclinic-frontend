@@ -6,7 +6,7 @@ import { persistReducer } from "redux-persist";
 //   zip_txt: zip_slice,
 // });
 
-const rootReducer = (state = {}, action) => state;
+const rootReducer = (state = {}) => state;
 
 const persistConfig = {
   key: "root",

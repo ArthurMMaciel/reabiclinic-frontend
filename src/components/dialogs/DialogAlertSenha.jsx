@@ -38,7 +38,7 @@ const DialogAlertSenha = (props) => {
             return;
         }
         alterarSenha(payload.sub, value)
-            .then(resp => {
+            .then(() => {
                 toast.success("Senha alterada com sucesso", { theme: "colored" });
                 setSenha("");
                 setConfirmarSenha("");

@@ -9,22 +9,8 @@ import { ptBR } from '@mui/x-data-grid/locales';
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import Papa from "papaparse";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Box, createTheme, styled } from "@mui/material";
+import { Box } from "@mui/material";
 import { FiltroContext } from "../../context/FiltroContext";
-
-const CustomDataGrid = styled(DataGrid)(({ theme }) => ({
-    "& .MuiDataGrid-columnHeaders": {
-        backgroundColor: "#58A9A0",
-        color: "white",
-        borderBottom: "none",
-    },
-    "& .MuiDataGrid-cell": {
-        borderBottom: "none",
-    },
-    "& .MuiDataGrid-footerContainer": {
-        backgroundColor: "#58A9A0",
-    },
-}));
 
 const CampoTabela = (props) => {
     const [selectionModel, setSelectionModel] = useState([]);
@@ -36,11 +22,12 @@ const CampoTabela = (props) => {
     );
     const apiRef = useGridApiRef();
     const inputRef = useRef(null);
-    const [pageSize, setPageSize] = useState(props.linhas ?? 0);
+    const [pageSize, setPageSize] = useState(props.linhas ?? 25);
     const [page, setPage] = useState(props.pagina ?? 0);
     const [rowsTabela, setRowsTabela] = useState(props.rowss);
     const [rowCountState, setRowCountState] = useState(props.total ?? 0);
     const filtroContext = useContext(FiltroContext);
+
     const CustomToolbar = () => {
         return (
             <GridToolbarContainer>
@@ -72,18 +59,17 @@ const CampoTabela = (props) => {
         );
     };
 
-    const handlePage = (paginas) => {
+    const handlePaginationModelChange = (newModel) => {
         setSelectionModel([]);
-        props.changePage(paginas);
-        setPage(paginas);
-    };
-
-    const handleLinhas = (linhas) => {
-        setSelectionModel([]);
-        setPage(0);
-        props.changePage(0);
-        props.changeLinhas(linhas);
-        setPageSize(linhas);
+        if (newModel.pageSize !== pageSize) {
+            setPageSize(newModel.pageSize);
+            setPage(0);
+            props.changePage(0);
+            props.changeLinhas(newModel.pageSize);
+        } else {
+            setPage(newModel.page);
+            props.changePage(newModel.page);
+        }
     };
 
     const handleFiltro = (filtro) => {
@@ -93,11 +79,11 @@ const CampoTabela = (props) => {
         let filter =
             filtro.items.length > 0
                 ? {
-                    field: filtro.items[0].columnField,
-                    operator: filtro.items[0].operatorValue,
+                    field: filtro.items[0].field,
+                    operator: filtro.items[0].operator,
                     value:
-                        filtro.items[0].columnField === "data" ||
-                            filtro.items[0].columnField === "data_criacao"
+                        filtro.items[0].field === "data" ||
+                            filtro.items[0].field === "data_criacao"
                             ? filtro.items[0].value +
                             retornaTimeZone(
                                 new Date(filtro.items[0].value).getTimezoneOffset() / 60
@@ -137,12 +123,6 @@ const CampoTabela = (props) => {
             header: true,
             skipEmptyLines: true,
             complete: function (result) {
-                const columnArray = [];
-                const valuesArray = [];
-                result.data.map((d) => {
-                    columnArray.push(Object.keys(d));
-                    valuesArray.push(Object.values(d));
-                });
                 props.setDados(result.data);
             },
         });
@@ -169,14 +149,14 @@ const CampoTabela = (props) => {
                 return objetoResultado;
             }, {});
         }
-    }, [props.columns]);
+    }, [props.columns, props.titulo]);
 
     useEffect(() => {
         localStorage.setItem(
             `columnVisibilityModel-${props.titulo}`,
             JSON.stringify(columnVisibilityModel)
         );
-    }, [columnVisibilityModel]);
+    }, [columnVisibilityModel, props.titulo]);
 
     useEffect(() => {
         setRowsTabela(props.rowss);
@@ -216,13 +196,13 @@ const CampoTabela = (props) => {
                     color: `lightgreen !important`,
                 },
                 "& .MuiButtonBase-root svg": {
-                    color: "white", 
+                    color: "white",
                 },
                 "& .MuiSelect-icon": {
                     color: "white",
                 },
                 "& .MuiSelect-select": {
-                    color: "white", 
+                    color: "white",
                 },
                 "& .MuiDataGrid-row.even": {
                     backgroundColor: "#DFEFEA",
@@ -245,11 +225,11 @@ const CampoTabela = (props) => {
                 {...(props.checkboxSelection
                     ? {
                         checkboxSelection: true,
-                        onSelectionModelChange: (newRowSelectionModel) => {
+                        onRowSelectionModelChange: (newRowSelectionModel) => {
                             setSelectionModel(newRowSelectionModel);
                             props.onRowSelectionModelChange(newRowSelectionModel);
                         },
-                        selectionModel: selectionModel,
+                        rowSelectionModel: selectionModel,
                     }
                     : {})}
                 rowHeight={60}
@@ -291,24 +271,19 @@ const CampoTabela = (props) => {
                 rows={rowsTabela}
                 {...props}
                 disableVirtualization
+                disableRowSelectionOnClick={props.disableSelectionOnClick}
                 localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
-                page={page}
-                pageSize={pageSize}
-                onPageChange={(page) => {
-                    handlePage(page);
-                }}
+                paginationModel={{ page, pageSize }}
+                onPaginationModelChange={handlePaginationModelChange}
                 paginationMode={props.serverOrder ? "server" : "client"}
                 sortingMode={props.serverOrder ? "server" : "client"}
                 rowCount={rowCountState}
-                onPageSizeChange={(newPageSize) => {
-                    handleLinhas(newPageSize);
-                }}
+                pageSizeOptions={[25, 50, 100]}
                 {...(props.serverOrder
                     ? {
                         onSortModelChange: (sort) => props.changeOrder(sort[0]),
                     }
                     : {})}
-                rowsPerPageOptions={[25, 50, 100]}
                 getRowClassName={(params) =>
                     params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
                 }
@@ -316,8 +291,8 @@ const CampoTabela = (props) => {
                     height: props.altura ? props.altura : "100%",
                     width: props.largura ? props.largura : null,
                 }}
-                components={{
-                    Toolbar: CustomToolbar,
+                slots={{
+                    toolbar: CustomToolbar,
                 }}
                 density="compact"
                 filterMode={props.serverOrder ? "server" : "client"}

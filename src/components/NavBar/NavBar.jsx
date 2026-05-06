@@ -4,17 +4,13 @@ import {
   DisclosureButton,
   DisclosurePanel,
 } from "@headlessui/react";
-import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
-import ToggleTheme from "../ToggleTheme/ToggleTheme";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { history } from "../../history";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import { jwtDecode } from "jwt-decode";
 import { Box, Divider, IconButton, styled } from "@mui/material";
-import LogoutIcon from "@mui/icons-material/Logout";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import logo from "../../img/logo.png";
-import { alterarUsuario } from "../../chamadasApi/usuarioApi";
 import DialogAlertSenha from "../dialogs/DialogAlertSenha";
 
 const currentURL = window.location.href;
@@ -22,7 +18,7 @@ const currentURL = window.location.href;
 const homePageRegex =
   /^(https?:\/\/[a-zA-Z0-9.-]+(\.[a-zA-Z]{2,})?(:\d+)?\/?)$/;
 
-const Circle = styled("div")(({ theme }) => ({
+const Circle = styled("div")(() => ({
   width: 40,
   height: 40,
   borderRadius: "50%",

@@ -164,3 +164,52 @@ const MOCK_TURNOS = [
 export function mockBuscarTodosHorarios() {
   return Promise.resolve([...MOCK_TURNOS]);
 }
+
+// ─── Avisos ───────────────────────────────────────────────────────────────────
+
+const MOCK_AVISOS = [
+  {
+    id: 1,
+    title: "Novo protocolo de higiene para equipamentos",
+    text: [
+      "A partir desta semana, todos os equipamentos de reabilitação devem ser higienizados com álcool 70% antes e após cada atendimento.",
+      "O protocolo completo está disponível na pasta de documentos na sala dos profissionais.",
+    ],
+    tags: ["protocolo", "higiene"],
+  },
+  {
+    id: 2,
+    title: "Capacitação: Técnicas de Bobath — Março/2025",
+    text: [
+      "Está confirmada a capacitação em técnicas de Bobath para fisioterapeutas e terapeutas ocupacionais nos dias 15 e 16 de março, das 8h às 17h.",
+      "As inscrições devem ser feitas com a coordenação até o dia 10/03. Vagas limitadas.",
+    ],
+    tags: ["capacitação", "bobath"],
+  },
+  {
+    id: 3,
+    title: "Expansão do horário de atendimento aos sábados",
+    text: [
+      "A partir do próximo sábado, o horário de atendimento será ampliado para até às 14h, atendendo à demanda crescente de pacientes.",
+      "Profissionais interessados em adicionar turno de sábado devem comunicar à coordenação até sexta-feira.",
+    ],
+    tags: ["horário", "sábado"],
+  },
+  {
+    id: 4,
+    title: "Manutenção preventiva dos equipamentos — 10/03",
+    text: [
+      "No dia 10 de março (segunda-feira) não haverá atendimentos no período da tarde devido à manutenção preventiva dos equipamentos de eletroterapia e ultrassom.",
+      "Os pacientes já foram notificados pelo administrativo. Dúvidas, falar com a coordenação.",
+    ],
+    tags: ["manutenção", "equipamentos"],
+  },
+];
+
+/**
+ * Simula GET /avisos.
+ * Retorna array de avisos — mesmo formato que o backend real.
+ */
+export function mockBuscarAvisos() {
+  return Promise.resolve([...MOCK_AVISOS]);
+}

@@ -1,3 +1,5 @@
+import React from "react";
+
 const Article = ({ title, text, tags, image, alt }) => {
     return <div className="p-5 bg-gray-200 dark:bg-dark-200 sm:rounded-xl sm:shadow-lg flex gap-2 flex-col items-center">
         <h3 className="font-raleway text-xl text-primary-200 dark:text-tertiary-200 font-bold">{title}</h3>

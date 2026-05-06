@@ -1,4 +1,9 @@
 import axios from "axios";
+import {
+  MOCK_AUTH_ENABLED,
+  mockAutentica,
+  mockBuscarTodosUsuarios,
+} from "../mockData/mockAuth";
 const url_base = import.meta.env.VITE_URL_API_BASE;
 const url = `${url_base}/usuarios`;
 
@@ -63,6 +68,10 @@ export const atualizaToken = () => {
 };
 
 export const autentica = (login, senha) => {
+  if (MOCK_AUTH_ENABLED) {
+    return mockAutentica(login, senha);
+  }
+
   return new Promise((resolve, reject) => {
     axios
       .post(`${url_base}/autenticacao/login`, {
@@ -107,8 +116,12 @@ export const buscarTodosUsuarios = (
   ordem = "",
   limit = null,
   offset = null
-) =>
-  new Promise((resolve, reject) => {
+) => {
+  if (MOCK_AUTH_ENABLED) {
+    return mockBuscarTodosUsuarios(filtro, colunaOrdem, ordem, limit, offset);
+  }
+
+  return new Promise((resolve, reject) => {
     let url_montado = `${url}?`;
 
     if (limit) {
@@ -140,6 +153,7 @@ export const buscarTodosUsuarios = (
       })
       .catch((error) => reject(error));
   });
+};
 
 export const buscaUsuario = (id) =>
   new Promise((resolve, reject) => {

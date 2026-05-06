@@ -1,4 +1,8 @@
 import axios from "axios";
+import {
+  MOCK_AUTH_ENABLED,
+  mockBuscarTodosHorarios,
+} from "../mockData/mockAuth";
 const url_base = import.meta.env.VITE_URL_API_BASE;
 const url = `${url_base}/turnos`;
 
@@ -36,8 +40,12 @@ export const buscarTodosHorarios = (
   ordem = "",
   limit = null,
   offset = null
-) =>
-  new Promise((resolve, reject) => {
+) => {
+  if (MOCK_AUTH_ENABLED) {
+    return mockBuscarTodosHorarios();
+  }
+
+  return new Promise((resolve, reject) => {
     let url_montado = `${url}?`;
 
     if (limit) {
@@ -70,6 +78,7 @@ export const buscarTodosHorarios = (
       })
       .catch((error) => reject(error));
   });
+};
 
 export const buscaHorario = (id) =>
   new Promise((resolve, reject) => {
